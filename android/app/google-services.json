@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "91842535632",
+    "project_id": "balabharti-76e58",
+    "storage_bucket": "balabharti-76e58.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91842535632:android:3d3c31d7d73bdb9991bed5",
+        "android_client_info": {
+          "package_name": "com.approvalmanagement.balabharti"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl-bU-cO3mabfKKJ0zJT_XkIO-dUZFfP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91842535632:android:090eaf89a386afe991bed5",
+        "android_client_info": {
+          "package_name": "com.approvalmanagement.balabharti.bala_bharti_approval_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl-bU-cO3mabfKKJ0zJT_XkIO-dUZFfP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:91842535632:android:d34ff8faca684b7391bed5",
+        "android_client_info": {
+          "package_name": "com.balabharti.approvalmanagement"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDl-bU-cO3mabfKKJ0zJT_XkIO-dUZFfP8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

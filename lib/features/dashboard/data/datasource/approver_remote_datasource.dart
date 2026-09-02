@@ -92,7 +92,11 @@ class ApproverRemoteDataSource {
         "status": request.status,
         "approvalDateTime": request.approvalDateTime,
         "approvedBy": request.approvedBy,
+        if (request.rejectionReason != null &&
+            request.rejectionReason!.trim().isNotEmpty)
+          "rejectionReason": request.rejectionReason!.trim(),
       };
+
 
       /// Upload new signature
       if (request.signature != null) {

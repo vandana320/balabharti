@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/storage/secure_storage.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../authentication/presentation/screens/login_screen.dart';
 import '../../data/datasource/approver_remote_datasource.dart';
 import '../../data/models/assigned_document_model.dart';
 import '../../data/models/validate_approver_request.dart';
@@ -42,9 +44,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final filter = selectedFilter == "All"
           ? true
           : document.status == selectedFilter;
-
       return search && filter;
     }).toList();
+
+    final pendingDocuments = documents
+        .where((document) => document.status == "Pending")
+        .length;
 
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -54,8 +59,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           children: [
             DashboardHeader(
               userName: "Shantanu Rao",
-
-              totalDocuments: filteredList.length,
+              totalDocuments: documents.length,
+              pendingDocuments: pendingDocuments,
+              onLogout: logout,
             ),
 
             DashboardSearchBar(
@@ -193,5 +199,159 @@ class _DashboardScreenState extends State<DashboardScreen> {
         context,
       ).showSnackBar(SnackBar(content: Text(e.toString())));
     }
+  }
+
+  Future<void> logout() async {
+    final shouldLogout = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(30),
+              topRight: Radius.circular(30),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 30),
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Drag handle
+                Container(
+                  width: 45,
+                  height: 5,
+                  margin: const EdgeInsets.only(bottom: 25),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade300,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+
+                // Logout Icon
+                Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.logout_rounded,
+                    color: AppColors.primary,
+                    size: 34,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Title
+                const Text(
+                  "Logout from account?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xff1F2937),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Description
+                Text(
+                  "You will be signed out from the Balabharti Approval Management System.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+
+                const SizedBox(height: 28),
+
+                // Logout Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.pop(sheetContext, true);
+                    },
+                    icon: const Icon(
+                      Icons.logout_rounded,
+                      size: 21,
+                    ),
+                    label: const Text(
+                      "Logout",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff1565C0),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // Cancel Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.pop(sheetContext, false);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xff1565C0),
+                      side: BorderSide(color: Colors.grey.shade300),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (shouldLogout != true) {
+      return;
+    }
+
+    // Clear login/session data
+    await SecureStorage.clear();
+
+    if (!mounted) return;
+
+    // Remove Dashboard and all previous authenticated routes
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
+    );
   }
 }
