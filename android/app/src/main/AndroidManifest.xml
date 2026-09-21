@@ -1,8 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="bala_bharti_approval_management"
-        android:name="${applicationName}"
-        android:icon="@mipmap/images_foreground">
+        android:label="Bala Bharti Approval Management"
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
