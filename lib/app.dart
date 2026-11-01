@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'core/theme/app_theme.dart';
-import 'features/authentication/presentation/screens/login_screen.dart';
+import 'features/authentication/presentation/screens/auth_check_screen.dart';
 
 class ApprovalManagementApp extends StatelessWidget {
   const ApprovalManagementApp({super.key});
@@ -12,7 +12,8 @@ class ApprovalManagementApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Approval Management',
       theme: AppTheme.lightTheme,
-      home: const LoginScreen(),
+
+      home: const AuthCheckScreen(),
     );
   }
 }

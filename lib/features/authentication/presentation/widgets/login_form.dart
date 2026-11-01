@@ -5,7 +5,6 @@ import '../../../dashboard/presentation/screens/dashboard_screen.dart';
 import '../../data/datasource/auth_remote_datasource.dart';
 import '../../data/models/login_request.dart';
 import '../screens/change_password_screen.dart';
-import '../screens/register_screen.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -29,43 +28,65 @@ class _LoginFormState extends State<LoginForm> {
     super.dispose();
   }
 
-  void login() async {
+
+  Future<void> login() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final response = await AuthRemoteDataSource().login(
-      LoginRequest(
-        email: usernameController.text.trim(),
-
-        pin: passwordController.text.trim(),
-      ),
-    );
-
-    if (response.success) {
-      await SecureStorage.saveUser(
-        id: response.data!.id,
-        email: response.data!.email,
-        role: response.data!.role,
+    try {
+      final response = await AuthRemoteDataSource().login(
+        LoginRequest(
+          email: usernameController.text.trim(),
+          pin: passwordController.text.trim(),
+        ),
       );
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(response.message)));
+      if (!mounted) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
+      if (response.success && response.data != null) {
+
+        // Save session
+        await SecureStorage.saveUser(
+          id: response.data!.id,
+          email: response.data!.email,
+          role: response.data!.role,
+        );
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.message),
+          ),
+        );
+
+        // Navigate only once
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const DashboardScreen(),
+          ),
+              (route) => false,
+        );
+
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response.message),
+          ),
+        );
+      }
+
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Login failed: $e"),
+          backgroundColor: Colors.red,
+        ),
       );
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const DashboardScreen()),
-        (route) => false,
-      );
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(response.message)));
     }
   }
 
@@ -179,7 +200,7 @@ class _LoginFormState extends State<LoginForm> {
 
                 const SizedBox(height: 25),
 
-                SizedBox(
+                /*SizedBox(
                   height: 55,
                   child: OutlinedButton.icon(
                     icon: const Icon(Icons.person_add_alt_1),
@@ -205,7 +226,7 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                 ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 15),*/
 
                 Center(
                   child: TextButton.icon(
